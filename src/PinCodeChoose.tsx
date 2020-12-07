@@ -1,4 +1,5 @@
 import PinCode, { PinStatus } from './PinCode'
+import { noBiometricsConfig } from './utils'
 
 import * as React from 'react'
 import { StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
@@ -8,7 +9,7 @@ import * as Keychain from 'react-native-keychain'
  * Pin Code Choose PIN Page
  */
 
-export type IProps = {
+export interface IProps {
   buttonDeleteComponent: any
   buttonDeleteText?: string
   buttonNumberComponent: any
@@ -39,7 +40,7 @@ export type IProps = {
   styleColorTitleError?: string
   styleColumnButtons?: StyleProp<ViewStyle>
   styleColumnDeleteButton?: StyleProp<ViewStyle>
-  styleContainer?: StyleProp<ViewStyle>
+  styleContainer: StyleProp<ViewStyle>
   styleContainerPinCode?: StyleProp<ViewStyle>
   styleDeleteButtonColorHideUnderlay?: string
   styleDeleteButtonColorShowUnderlay?: string
@@ -66,6 +67,8 @@ export type IProps = {
   titleConfirmFailed?: string
   titleValidationFailed?: string
   validationRegex?: RegExp
+  vibrationEnabled?: boolean
+  delayBetweenAttempts?: number
 }
 
 export type IState = {
@@ -74,6 +77,9 @@ export type IState = {
 }
 
 class PinCodeChoose extends React.PureComponent<IProps, IState> {
+  static defaultProps: Partial<IProps> = {
+    styleContainer: null
+  }
   constructor(props: IProps) {
     super(props)
     this.state = { status: PinStatus.choose, pinCode: '' }
@@ -96,7 +102,8 @@ class PinCodeChoose extends React.PureComponent<IProps, IState> {
         await Keychain.setInternetCredentials(
           this.props.pinCodeKeychainName,
           this.props.pinCodeKeychainName,
-          pinCode
+          pinCode,
+          noBiometricsConfig
         )
       }
       if (!!this.props.finishProcess) this.props.finishProcess(pinCode)
@@ -112,11 +119,10 @@ class PinCodeChoose extends React.PureComponent<IProps, IState> {
   render() {
     return (
       <View
-        style={
+        style={[
+          styles.container,
           this.props.styleContainer
-            ? this.props.styleContainer
-            : styles.container
-        }>
+        ]}>
         {this.state.status === PinStatus.choose && (
           <PinCode
             buttonDeleteComponent={this.props.buttonDeleteComponent || null}
@@ -180,6 +186,7 @@ class PinCodeChoose extends React.PureComponent<IProps, IState> {
               this.props.titleValidationFailed || 'PIN code unsafe'
             }
             validationRegex={this.props.validationRegex}
+            vibrationEnabled={this.props.vibrationEnabled}
           />
         )}
         {this.state.status === PinStatus.confirm && (
@@ -249,6 +256,8 @@ class PinCodeChoose extends React.PureComponent<IProps, IState> {
             styleTextSubtitle={this.props.styleTextSubtitle}
             styleTextTitle={this.props.styleTextTitle}
             styleViewTitle={this.props.styleViewTitle}
+            vibrationEnabled={this.props.vibrationEnabled}
+            delayBetweenAttempts={this.props.delayBetweenAttempts}
           />
         )}
       </View>
@@ -256,12 +265,13 @@ class PinCodeChoose extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default PinCodeChoose
 
-let styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   }
 })
+
+export default PinCodeChoose

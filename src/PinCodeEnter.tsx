@@ -1,6 +1,6 @@
 import delay from './delay'
 import PinCode, { PinStatus } from './PinCode'
-import { PinResultStatus } from './utils'
+import { PinResultStatus, noBiometricsConfig } from './utils'
 
 import AsyncStorage from '@react-native-community/async-storage'
 import * as React from 'react'
@@ -18,7 +18,7 @@ import TouchID from 'react-native-touch-id'
  * Pin Code Enter PIN Page
  */
 
-export type IProps = {
+export interface IProps {
   buttonDeleteComponent: any
   buttonDeleteText?: string
   buttonNumberComponent: any
@@ -87,9 +87,12 @@ export type IProps = {
   touchIDDisabled: boolean
   touchIDSentence: string
   touchIDTitle?: string
+  passcodeFallback?: boolean
+  vibrationEnabled?: boolean
+  delayBetweenAttempts?: number
 }
 
-export type IState = {
+export interface IState {
   pinCodeStatus: PinResultStatus
   locked: boolean
 }
@@ -97,19 +100,25 @@ export type IState = {
 class PinCodeEnter extends React.PureComponent<IProps, IState> {
   keyChainResult: string | undefined = undefined
 
+  static defaultProps = {
+    passcodeFallback: true,
+    styleContainer: null
+  }
+
   constructor(props: IProps) {
     super(props)
     this.state = { pinCodeStatus: PinResultStatus.initial, locked: false }
     this.endProcess = this.endProcess.bind(this)
     this.launchTouchID = this.launchTouchID.bind(this)
-  }
-
-  async componentWillMount() {
     if (!this.props.storedPin) {
-      const result = await Keychain.getInternetCredentials(
-        this.props.pinCodeKeychainName
-      )
-      this.keyChainResult = result.password || undefined
+      Keychain.getInternetCredentials(
+        this.props.pinCodeKeychainName,
+        noBiometricsConfig
+      ).then(result => {
+        this.keyChainResult = result && result.password || undefined
+      }).catch(error => {
+        console.log('PinCodeEnter: ', error)
+      })
     }
   }
 
@@ -131,7 +140,7 @@ class PinCodeEnter extends React.PureComponent<IProps, IState> {
   }
 
   triggerTouchID() {
-    TouchID.isSupported()
+    !!TouchID && TouchID.isSupported()
       .then(() => {
         setTimeout(() => {
           this.launchTouchID()
@@ -202,7 +211,7 @@ class PinCodeEnter extends React.PureComponent<IProps, IState> {
       cancelText: this.props.textCancelButtonTouchID || 'Cancel',
       fallbackLabel: 'Show Passcode',
       unifiedErrors: false,
-      passcodeFallback: true
+      passcodeFallback: this.props.passcodeFallback
     }
     try {
       await TouchID.authenticate(
@@ -224,14 +233,13 @@ class PinCodeEnter extends React.PureComponent<IProps, IState> {
 
   render() {
     const pin =
-      this.props.storedPin || (this.keyChainResult && this.keyChainResult)
+      this.props.storedPin || this.keyChainResult
     return (
       <View
-        style={
+        style={[
+          styles.container,
           this.props.styleContainer
-            ? this.props.styleContainer
-            : styles.container
-        }>
+        ]}>
         <PinCode
           buttonDeleteComponent={this.props.buttonDeleteComponent || null}
           buttonDeleteText={this.props.buttonDeleteText}
@@ -243,6 +251,7 @@ class PinCodeEnter extends React.PureComponent<IProps, IState> {
           customBackSpaceIcon={this.props.customBackSpaceIcon}
           emptyColumnComponent={this.props.emptyColumnComponent}
           endProcess={this.endProcess}
+          launchTouchID={this.launchTouchID}
           getCurrentLength={this.props.getCurrentLength}
           iconButtonDeleteDisabled={this.props.iconButtonDeleteDisabled}
           numbersButtonOverlayColor={
@@ -298,18 +307,20 @@ class PinCodeEnter extends React.PureComponent<IProps, IState> {
           titleConfirmFailed={
             this.props.titleConfirmFailed || 'Your entries did not match'
           }
+          vibrationEnabled={this.props.vibrationEnabled}
+          delayBetweenAttempts={this.props.delayBetweenAttempts}
         />
       </View>
     )
   }
 }
 
-export default PinCodeEnter
-
-let styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   }
 })
+
+export default PinCodeEnter

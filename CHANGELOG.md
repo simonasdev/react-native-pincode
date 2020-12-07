@@ -5,6 +5,39 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [1.22.5] - 2020-09-12
+### Merged
+- Merged `Changes to avoid Keychain Prompt on Login screen (Android)` PR [PR 154](https://github.com/jarden-digital/react-native-pincode/pull/154) from [BeInLife](https://github.com/BeInLife)
+
+
+## [1.22.4] - 2020-08-16
+### Merged
+- Merged `updated react-native-vector-icons to latest` PR [PR 148](https://github.com/jarden-digital/react-native-pincode/pull/148) from [emmastead](https://github.com/emmastead)
+
+
+## [1.22.3] - 2020-06-19
+### Merged
+- Merged `Feature launch touch id from pin pad` PR [PR 142](https://github.com/jarden-digital/react-native-pincode/pull/142) from [NetPumi2](https://github.com/NetPumi2)
+- Merged `Fix keychain error android` [PR 144](https://github.com/jarden-digital/react-native-pincode/pull/144) from [szlezak](https://github.com/szlezak)
+### Fixed
+- Added a test to prevent TouchID being undefined [Issue 141](https://github.com/jarden-digital/react-native-pincode/issues/141)
+
+
+## [1.22.2] - 2020-03-09
+### Fixed
+- Fixed the delete button issue [Issue 130](https://github.com/jarden-digital/react-native-pincode/issues/130)
+
+
+## [1.22.1] - 2020-03-09
+### Bumped
+- Bumped react-native-keychain to 5.0.1
+
+
+## [1.22.0] - 2020-03-09
+### Merged
+- Merged rn0.61 PR [PR 127](https://github.com/jarden-digital/react-native-pincode/pull/127)
+
+
 ## [1.21.0] - 2019-06-27
 ### Added
 - Added `customBackSpaceIcon` and `lockedIconComponent` properties after [Galimpian](https://github.com/galimpian) pull request. Related issue and pull request: ([Issue 99](https://github.com/jarden-digital/react-native-pincode/issues/99)) ([PR 100](https://github.com/jarden-digital/react-native-pincode/pull/100))
