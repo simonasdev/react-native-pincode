@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { PinStatus } from './PinCode';
 import { PinResultStatus } from './utils';
 import * as React from 'react';
@@ -92,8 +93,8 @@ declare class PinCodeEnter extends React.PureComponent<IProps, IState> {
     componentDidMount(): void;
     componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, prevContext: any): void;
     triggerTouchID(): void;
-    endProcess: (pinCode?: string) => Promise<void>;
+    endProcess: (pinCode?: string) => Promise<any>;
     launchTouchID(): Promise<void>;
-    render(): any;
+    render(): JSX.Element;
 }
 export default PinCodeEnter;
