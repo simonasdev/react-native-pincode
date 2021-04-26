@@ -6,6 +6,7 @@ import { StyleProp, TextStyle, ViewStyle } from 'react-native';
  * Pin Code Enter PIN Page
  */
 export interface IProps {
+    alphabetCharsVisible?: boolean;
     buttonDeleteComponent: any;
     buttonDeleteText?: string;
     buttonNumberComponent: any;
@@ -34,6 +35,7 @@ export interface IProps {
     pinStatusExternal: PinResultStatus;
     status: PinStatus;
     storedPin: string | null;
+    styleAlphabet?: StyleProp<TextStyle>;
     styleButtonCircle?: StyleProp<ViewStyle>;
     styleCircleHiddenPassword?: StyleProp<ViewStyle>;
     styleCircleSizeEmpty?: number;
