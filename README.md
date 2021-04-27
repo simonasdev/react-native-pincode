@@ -25,7 +25,7 @@ yarn add @haskkor/react-native-pincode
 Async storage uses the [react-native-async-storage](https://github.com/react-native-community/react-native-async-storage) library which has to be linked
 
 ```
-react-native link @react-native-community/async-storage
+react-native link @react-native-async-storage/async-storage
 ```
 
 If you wish to use the `TouchID/FaceID` authentication you will have to link the [library](https://github.com/naoufal/react-native-touch-id):
@@ -82,14 +82,14 @@ await hasUserSetPinCode(serviceName)
 One can also use a provided function to delete a PIN code previously set in the Keychain.
 The `service name` parameter is optional. If provided, it should match the `pinCodeKeychainName` property.
 
-``` 
+```
 import {deleteUserPinCode} from '@haskkor/react-native-pincode'
 await deleteUserPinCode(serviceName)
 ```
 
 If needed, the internal states that record `the number of attemps` and `time of last attempt` can be reset in addition to user pin code deletion.
 
-``` 
+```
 import {resetPinCodeInternalStates} from '@haskkor/react-native-pincode'
 await resetPinCodeInternalStates()
 ```
@@ -111,7 +111,7 @@ await resetPinCodeInternalStates()
 |**`finishProcess`**|Function to be used when the user enters the right PIN code|Removes the values in AsyncStorage and set the status to `success`|`false`|`(pinCode?: string) => void`|
 |**`getCurrentPinLength`**|Function returning the length of the current PIN code|`None`|`false`|`(length: number) => void`|
 |**`handleResultEnterPin`**|Function to be used to handle the PIN code entered by the user. Can be used for external-custom pin validation, return boolean to override internal pin validation| undefined |`false`|(pinCode?: string) => bool or undefined|
-|**`iconComponentLockedPage`**|View component to be used between the timer and the text on the locked application page|A circular red View using the `lock` material icon|`false`|`any`| 
+|**`iconComponentLockedPage`**|View component to be used between the timer and the text on the locked application page|A circular red View using the `lock` material icon|`false`|`any`|
 |**`iconButtonDeleteDisabled`**|Boolean to remove the icon on the delete button of the PIN panel|`false`|`false`|`boolean`|
 |**`launchTouchID`**|Function to manually trigger the touchID|`undefined`|`false`|`() => void`|
 |**`lockedIconComponent`**|Component to replace the locked icon on the locked application page|`Material lock icon`|`false`|`any`|
